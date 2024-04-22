@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package pipeline.v1;
+
+option go_package = "github.com/grafana/agent-remote-config/api/gen/proto/go/pipeline/v1;pipelinev1";
+
+// A Pipeline is a self-contained snippet of configuration that can be assigned to
+// agents based on matchers.
+message Pipeline {
+  // The name of the pipeline. This is the unique identifier for the pipeline.
+  string name = 1;
+
+  // The configuration contents of the pipeline to be used by agents.
+  string contents = 2;
+
+  // Matchers are used to match against agents and assign pipelines to them.
+  // They follow the syntax of the Prometheus [Alertmanager matchers](https://prometheus.io/docs/alerting/latest/configuration/#matcher)
+  repeated string matchers = 3;
+}
+
+message Pipelines {
+  repeated Pipeline pipelines = 1;
+}
+
+message GetPipelineRequest {
+  string name = 1;
+}
+
+message ListPipelinesRequest {
+}
+
+message CreatePipelineRequest {
+  Pipeline pipeline = 1;
+}
+
+message UpdatePipelineRequest {
+  Pipeline pipeline = 1;
+}
+
+message DeletePipelineRequest {
+  string name = 1;
+}
+
+message DeletePipelineResponse {
+}
+
+// The PipelineService defines the RPCs for managing pipelines.
+service PipelineService {
+  // GetPipeline returns a pipeline by name.
+  rpc GetPipeline (GetPipelineRequest) returns (Pipeline);
+
+  // ListPipelines returns all pipelines.
+  rpc ListPipelines (ListPipelinesRequest) returns (Pipelines);
+
+  // CreatePipeline creates a new pipeline and returns it.
+  rpc CreatePipeline (CreatePipelineRequest) returns (Pipeline);
+
+  // UpdatePipeline updates an existing pipeline and returns it.
+  rpc UpdatePipeline (UpdatePipelineRequest) returns (Pipeline);
+
+  // DeletePipeline deletes a pipeline by name.
+  rpc DeletePipeline (DeletePipelineRequest) returns (DeletePipelineResponse);
+}
