@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package agent.v1;
+
+option go_package = "github.com/grafana/agent-remote-config/api/gen/proto/go/agent/v1;agentv1";
+
+// GetConfigRequest is the request message to get an agent's configuration.
+// The agent's ID and any supplied metadata are used to determine which
+// pipelines to include in the configuration.
+message GetConfigRequest {
+  string id = 1;
+  map<string, string> metadata = 2;
+}
+
+message GetConfigResponse {
+  string content = 1;
+}
+
+message GetAgentRequest {
+  string id = 1;
+}
+
+message Agent {
+  string id = 1;
+  map<string, string> metadata = 2;
+}
+
+message ListAgentsRequest {
+}
+
+message Agents {
+  repeated Agent agents = 1;
+}
+
+message CreateAgentRequest {
+  Agent agent = 1;
+}
+
+message UpdateAgentRequest {
+  Agent agent = 1;
+}
+
+message DeleteAgentRequest {
+  string id = 1;
+}
+
+message DeleteAgentResponse {
+}
+
+// AgentService is the service that provides remote configuration for the agent.
+// It is used to register and update the agent's metadata, and to fetch the
+// agent's configuration.
+service AgentService {
+  // GetConfig returns the agent's configuration. 
+  rpc GetConfig (GetConfigRequest) returns (GetConfigResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  };
+
+  // GetAgent returns information about the agent.
+  rpc GetAgent (GetAgentRequest) returns (Agent);
+
+  // ListAgents returns information about all agents.
+  rpc ListAgents (ListAgentsRequest) returns (Agents);
+
+  // CreateAgent registers a new agent.
+  rpc CreateAgent (CreateAgentRequest) returns (Agent);
+
+  // UpdateAgent updates an existing agent.
+  rpc UpdateAgent (UpdateAgentRequest) returns (Agent);
+
+  // DeleteAgent deletes an existing agent.
+  rpc DeleteAgent (DeleteAgentRequest) returns (DeleteAgentResponse);
+}
