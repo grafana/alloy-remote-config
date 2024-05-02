@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package collector.v1;
 
-option go_package = "github.com/grafana/collector-remote-config/api/gen/proto/go/collector/v1;collectorv1";
+option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/collector/v1;collectorv1";
 
 // GetConfigRequest is the request message to get an collector's configuration.
 // The collector's ID and any supplied metadata are used to determine which

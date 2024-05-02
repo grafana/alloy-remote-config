@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/grafana/collector-remote-config/api/gen/proto/go/collector/v1"
+	v1 "github.com/grafana/alloy-remote-config/api/gen/proto/go/collector/v1"
 	http "net/http"
 	strings "strings"
 )
