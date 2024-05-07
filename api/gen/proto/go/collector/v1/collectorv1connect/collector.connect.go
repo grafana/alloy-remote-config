@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect.IsAtLeastVersion1_13_0
+const _ = connect.IsAtLeastVersion1_7_0
 
 const (
 	// CollectorServiceName is the fully-qualified name of the CollectorService service.
@@ -53,17 +53,6 @@ const (
 	CollectorServiceDeleteCollectorProcedure = "/collector.v1.CollectorService/DeleteCollector"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	collectorServiceServiceDescriptor               = v1.File_collector_v1_collector_proto.Services().ByName("CollectorService")
-	collectorServiceGetConfigMethodDescriptor       = collectorServiceServiceDescriptor.Methods().ByName("GetConfig")
-	collectorServiceGetCollectorMethodDescriptor    = collectorServiceServiceDescriptor.Methods().ByName("GetCollector")
-	collectorServiceListCollectorsMethodDescriptor  = collectorServiceServiceDescriptor.Methods().ByName("ListCollectors")
-	collectorServiceCreateCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("CreateCollector")
-	collectorServiceUpdateCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("UpdateCollector")
-	collectorServiceDeleteCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("DeleteCollector")
-)
-
 // CollectorServiceClient is a client for the collector.v1.CollectorService service.
 type CollectorServiceClient interface {
 	// GetConfig returns the collector's configuration.
@@ -93,39 +82,33 @@ func NewCollectorServiceClient(httpClient connect.HTTPClient, baseURL string, op
 		getConfig: connect.NewClient[v1.GetConfigRequest, v1.GetConfigResponse](
 			httpClient,
 			baseURL+CollectorServiceGetConfigProcedure,
-			connect.WithSchema(collectorServiceGetConfigMethodDescriptor),
 			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
 		getCollector: connect.NewClient[v1.GetCollectorRequest, v1.Collector](
 			httpClient,
 			baseURL+CollectorServiceGetCollectorProcedure,
-			connect.WithSchema(collectorServiceGetCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
+			opts...,
 		),
 		listCollectors: connect.NewClient[v1.ListCollectorsRequest, v1.Collectors](
 			httpClient,
 			baseURL+CollectorServiceListCollectorsProcedure,
-			connect.WithSchema(collectorServiceListCollectorsMethodDescriptor),
-			connect.WithClientOptions(opts...),
+			opts...,
 		),
 		createCollector: connect.NewClient[v1.CreateCollectorRequest, v1.Collector](
 			httpClient,
 			baseURL+CollectorServiceCreateCollectorProcedure,
-			connect.WithSchema(collectorServiceCreateCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
+			opts...,
 		),
 		updateCollector: connect.NewClient[v1.UpdateCollectorRequest, v1.Collector](
 			httpClient,
 			baseURL+CollectorServiceUpdateCollectorProcedure,
-			connect.WithSchema(collectorServiceUpdateCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
+			opts...,
 		),
 		deleteCollector: connect.NewClient[v1.DeleteCollectorRequest, v1.DeleteCollectorResponse](
 			httpClient,
 			baseURL+CollectorServiceDeleteCollectorProcedure,
-			connect.WithSchema(collectorServiceDeleteCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
+			opts...,
 		),
 	}
 }
@@ -195,39 +178,33 @@ func NewCollectorServiceHandler(svc CollectorServiceHandler, opts ...connect.Han
 	collectorServiceGetConfigHandler := connect.NewUnaryHandler(
 		CollectorServiceGetConfigProcedure,
 		svc.GetConfig,
-		connect.WithSchema(collectorServiceGetConfigMethodDescriptor),
 		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
 	collectorServiceGetCollectorHandler := connect.NewUnaryHandler(
 		CollectorServiceGetCollectorProcedure,
 		svc.GetCollector,
-		connect.WithSchema(collectorServiceGetCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
+		opts...,
 	)
 	collectorServiceListCollectorsHandler := connect.NewUnaryHandler(
 		CollectorServiceListCollectorsProcedure,
 		svc.ListCollectors,
-		connect.WithSchema(collectorServiceListCollectorsMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
+		opts...,
 	)
 	collectorServiceCreateCollectorHandler := connect.NewUnaryHandler(
 		CollectorServiceCreateCollectorProcedure,
 		svc.CreateCollector,
-		connect.WithSchema(collectorServiceCreateCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
+		opts...,
 	)
 	collectorServiceUpdateCollectorHandler := connect.NewUnaryHandler(
 		CollectorServiceUpdateCollectorProcedure,
 		svc.UpdateCollector,
-		connect.WithSchema(collectorServiceUpdateCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
+		opts...,
 	)
 	collectorServiceDeleteCollectorHandler := connect.NewUnaryHandler(
 		CollectorServiceDeleteCollectorProcedure,
 		svc.DeleteCollector,
-		connect.WithSchema(collectorServiceDeleteCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
+		opts...,
 	)
 	return "/collector.v1.CollectorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
