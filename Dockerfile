@@ -2,7 +2,7 @@
 FROM golang:latest AS go_builder
 
 # Install protoc-gen-go
-RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.31.0
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.32.0
 
 # Stage 2: Use the bufbuild/buf image as base
 FROM bufbuild/buf:latest
