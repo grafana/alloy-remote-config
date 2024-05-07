@@ -14,5 +14,5 @@ make build-container
 
 To generate the code with the new protobuf definitions, run the following command to regenerate the code in a Docker container:
 ```bash
-make buf-generate-container
+make buf-generate
 ```

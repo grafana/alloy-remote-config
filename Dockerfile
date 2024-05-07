@@ -1,5 +1,6 @@
 # Stage 1: Use a Golang image to get protoc-gen-go
-FROM golang:latest AS go_builder
+# The version of the go image should match the version of go in this project
+FROM golang:1.22.1 AS go_builder
 
 # Install protoc-gen-go
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.32.0
