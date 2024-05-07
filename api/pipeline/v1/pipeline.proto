@@ -58,6 +58,9 @@ service PipelineService {
   // UpdatePipeline updates an existing pipeline and returns it.
   rpc UpdatePipeline (UpdatePipelineRequest) returns (Pipeline);
 
+  // CreateOrUpdatePipeline creates a new pipeline or updates an existing one and returns it.
+  rpc CreateOrUpdatePipeline (UpdatePipelineRequest) returns (Pipeline);
+
   // DeletePipeline deletes a pipeline by name.
   rpc DeletePipeline (DeletePipelineRequest) returns (DeletePipelineResponse);
 }
