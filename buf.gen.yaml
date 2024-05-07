@@ -3,6 +3,3 @@ plugins:
   - plugin: go
     out: gen/proto/go
     opt: paths=source_relative
-  - plugin: connect-go
-    out: gen/proto/go
-    opt: paths=source_relative
