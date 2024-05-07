@@ -32,11 +32,7 @@ message Collectors {
   repeated Collector collectors = 1;
 }
 
-message CreateCollectorRequest {
-  Collector collector = 1;
-}
-
-message UpdateCollectorRequest {
+message PutCollectorRequest {
   Collector collector = 1;
 }
 
@@ -62,11 +58,8 @@ service CollectorService {
   // ListCollectors returns information about all collectors.
   rpc ListCollectors (ListCollectorsRequest) returns (Collectors);
 
-  // CreateCollector registers a new collector.
-  rpc CreateCollector (CreateCollectorRequest) returns (Collector);
-
-  // UpdateCollector updates an existing collector.
-  rpc UpdateCollector (UpdateCollectorRequest) returns (Collector);
+  // PutCollector creates or replaces a collector.
+  rpc PutCollector (PutCollectorRequest) returns (Collector);
 
   // DeleteCollector deletes an existing collector.
   rpc DeleteCollector (DeleteCollectorRequest) returns (DeleteCollectorResponse);

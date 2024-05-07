@@ -29,11 +29,7 @@ message GetPipelineRequest {
 message ListPipelinesRequest {
 }
 
-message CreatePipelineRequest {
-  Pipeline pipeline = 1;
-}
-
-message UpdatePipelineRequest {
+message PutPipelineRequest {
   Pipeline pipeline = 1;
 }
 
@@ -52,11 +48,8 @@ service PipelineService {
   // ListPipelines returns all pipelines.
   rpc ListPipelines (ListPipelinesRequest) returns (Pipelines);
 
-  // CreatePipeline creates a new pipeline and returns it.
-  rpc CreatePipeline (CreatePipelineRequest) returns (Pipeline);
-
-  // UpdatePipeline updates an existing pipeline and returns it.
-  rpc UpdatePipeline (UpdatePipelineRequest) returns (Pipeline);
+  // PutPipeline creates or replaces a pipeline.
+  rpc PutPipeline (PutPipelineRequest) returns (Pipeline);
 
   // DeletePipeline deletes a pipeline by name.
   rpc DeletePipeline (DeletePipelineRequest) returns (DeletePipelineResponse);
