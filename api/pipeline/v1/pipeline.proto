@@ -37,6 +37,10 @@ message UpdatePipelineRequest {
   Pipeline pipeline = 1;
 }
 
+message UpsertPipelineRequest {
+  Pipeline pipeline = 1;
+}
+
 message DeletePipelineRequest {
   string name = 1;
 }
@@ -57,6 +61,9 @@ service PipelineService {
 
   // UpdatePipeline updates an existing pipeline and returns it.
   rpc UpdatePipeline (UpdatePipelineRequest) returns (Pipeline);
+
+  // UpsertPipeline creates a new pipeline or updates an existing one and returns it.
+  rpc UpsertPipeline (UpsertPipelineRequest) returns (Pipeline);
 
   // DeletePipeline deletes a pipeline by name.
   rpc DeletePipeline (DeletePipelineRequest) returns (DeletePipelineResponse);
