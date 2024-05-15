@@ -45,9 +45,9 @@ const (
 	// PipelineServiceUpdatePipelineProcedure is the fully-qualified name of the PipelineService's
 	// UpdatePipeline RPC.
 	PipelineServiceUpdatePipelineProcedure = "/pipeline.v1.PipelineService/UpdatePipeline"
-	// PipelineServiceCreateOrUpdatePipelineProcedure is the fully-qualified name of the
-	// PipelineService's CreateOrUpdatePipeline RPC.
-	PipelineServiceCreateOrUpdatePipelineProcedure = "/pipeline.v1.PipelineService/CreateOrUpdatePipeline"
+	// PipelineServiceUpsertPipelineProcedure is the fully-qualified name of the PipelineService's
+	// UpsertPipeline RPC.
+	PipelineServiceUpsertPipelineProcedure = "/pipeline.v1.PipelineService/UpsertPipeline"
 	// PipelineServiceDeletePipelineProcedure is the fully-qualified name of the PipelineService's
 	// DeletePipeline RPC.
 	PipelineServiceDeletePipelineProcedure = "/pipeline.v1.PipelineService/DeletePipeline"
@@ -55,13 +55,13 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	pipelineServiceServiceDescriptor                      = v1.File_pipeline_v1_pipeline_proto.Services().ByName("PipelineService")
-	pipelineServiceGetPipelineMethodDescriptor            = pipelineServiceServiceDescriptor.Methods().ByName("GetPipeline")
-	pipelineServiceListPipelinesMethodDescriptor          = pipelineServiceServiceDescriptor.Methods().ByName("ListPipelines")
-	pipelineServiceCreatePipelineMethodDescriptor         = pipelineServiceServiceDescriptor.Methods().ByName("CreatePipeline")
-	pipelineServiceUpdatePipelineMethodDescriptor         = pipelineServiceServiceDescriptor.Methods().ByName("UpdatePipeline")
-	pipelineServiceCreateOrUpdatePipelineMethodDescriptor = pipelineServiceServiceDescriptor.Methods().ByName("CreateOrUpdatePipeline")
-	pipelineServiceDeletePipelineMethodDescriptor         = pipelineServiceServiceDescriptor.Methods().ByName("DeletePipeline")
+	pipelineServiceServiceDescriptor              = v1.File_pipeline_v1_pipeline_proto.Services().ByName("PipelineService")
+	pipelineServiceGetPipelineMethodDescriptor    = pipelineServiceServiceDescriptor.Methods().ByName("GetPipeline")
+	pipelineServiceListPipelinesMethodDescriptor  = pipelineServiceServiceDescriptor.Methods().ByName("ListPipelines")
+	pipelineServiceCreatePipelineMethodDescriptor = pipelineServiceServiceDescriptor.Methods().ByName("CreatePipeline")
+	pipelineServiceUpdatePipelineMethodDescriptor = pipelineServiceServiceDescriptor.Methods().ByName("UpdatePipeline")
+	pipelineServiceUpsertPipelineMethodDescriptor = pipelineServiceServiceDescriptor.Methods().ByName("UpsertPipeline")
+	pipelineServiceDeletePipelineMethodDescriptor = pipelineServiceServiceDescriptor.Methods().ByName("DeletePipeline")
 )
 
 // PipelineServiceClient is a client for the pipeline.v1.PipelineService service.
@@ -74,8 +74,8 @@ type PipelineServiceClient interface {
 	CreatePipeline(context.Context, *connect.Request[v1.CreatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
 	// UpdatePipeline updates an existing pipeline and returns it.
 	UpdatePipeline(context.Context, *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
-	// CreateOrUpdatePipeline creates a new pipeline or updates an existing one and returns it.
-	CreateOrUpdatePipeline(context.Context, *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
+	// UpsertPipeline creates a new pipeline or updates an existing one and returns it.
+	UpsertPipeline(context.Context, *connect.Request[v1.UpsertPipelineRequest]) (*connect.Response[v1.Pipeline], error)
 	// DeletePipeline deletes a pipeline by name.
 	DeletePipeline(context.Context, *connect.Request[v1.DeletePipelineRequest]) (*connect.Response[v1.DeletePipelineResponse], error)
 }
@@ -114,10 +114,10 @@ func NewPipelineServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(pipelineServiceUpdatePipelineMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createOrUpdatePipeline: connect.NewClient[v1.UpdatePipelineRequest, v1.Pipeline](
+		upsertPipeline: connect.NewClient[v1.UpsertPipelineRequest, v1.Pipeline](
 			httpClient,
-			baseURL+PipelineServiceCreateOrUpdatePipelineProcedure,
-			connect.WithSchema(pipelineServiceCreateOrUpdatePipelineMethodDescriptor),
+			baseURL+PipelineServiceUpsertPipelineProcedure,
+			connect.WithSchema(pipelineServiceUpsertPipelineMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		deletePipeline: connect.NewClient[v1.DeletePipelineRequest, v1.DeletePipelineResponse](
@@ -131,12 +131,12 @@ func NewPipelineServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // pipelineServiceClient implements PipelineServiceClient.
 type pipelineServiceClient struct {
-	getPipeline            *connect.Client[v1.GetPipelineRequest, v1.Pipeline]
-	listPipelines          *connect.Client[v1.ListPipelinesRequest, v1.Pipelines]
-	createPipeline         *connect.Client[v1.CreatePipelineRequest, v1.Pipeline]
-	updatePipeline         *connect.Client[v1.UpdatePipelineRequest, v1.Pipeline]
-	createOrUpdatePipeline *connect.Client[v1.UpdatePipelineRequest, v1.Pipeline]
-	deletePipeline         *connect.Client[v1.DeletePipelineRequest, v1.DeletePipelineResponse]
+	getPipeline    *connect.Client[v1.GetPipelineRequest, v1.Pipeline]
+	listPipelines  *connect.Client[v1.ListPipelinesRequest, v1.Pipelines]
+	createPipeline *connect.Client[v1.CreatePipelineRequest, v1.Pipeline]
+	updatePipeline *connect.Client[v1.UpdatePipelineRequest, v1.Pipeline]
+	upsertPipeline *connect.Client[v1.UpsertPipelineRequest, v1.Pipeline]
+	deletePipeline *connect.Client[v1.DeletePipelineRequest, v1.DeletePipelineResponse]
 }
 
 // GetPipeline calls pipeline.v1.PipelineService.GetPipeline.
@@ -159,9 +159,9 @@ func (c *pipelineServiceClient) UpdatePipeline(ctx context.Context, req *connect
 	return c.updatePipeline.CallUnary(ctx, req)
 }
 
-// CreateOrUpdatePipeline calls pipeline.v1.PipelineService.CreateOrUpdatePipeline.
-func (c *pipelineServiceClient) CreateOrUpdatePipeline(ctx context.Context, req *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error) {
-	return c.createOrUpdatePipeline.CallUnary(ctx, req)
+// UpsertPipeline calls pipeline.v1.PipelineService.UpsertPipeline.
+func (c *pipelineServiceClient) UpsertPipeline(ctx context.Context, req *connect.Request[v1.UpsertPipelineRequest]) (*connect.Response[v1.Pipeline], error) {
+	return c.upsertPipeline.CallUnary(ctx, req)
 }
 
 // DeletePipeline calls pipeline.v1.PipelineService.DeletePipeline.
@@ -179,8 +179,8 @@ type PipelineServiceHandler interface {
 	CreatePipeline(context.Context, *connect.Request[v1.CreatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
 	// UpdatePipeline updates an existing pipeline and returns it.
 	UpdatePipeline(context.Context, *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
-	// CreateOrUpdatePipeline creates a new pipeline or updates an existing one and returns it.
-	CreateOrUpdatePipeline(context.Context, *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error)
+	// UpsertPipeline creates a new pipeline or updates an existing one and returns it.
+	UpsertPipeline(context.Context, *connect.Request[v1.UpsertPipelineRequest]) (*connect.Response[v1.Pipeline], error)
 	// DeletePipeline deletes a pipeline by name.
 	DeletePipeline(context.Context, *connect.Request[v1.DeletePipelineRequest]) (*connect.Response[v1.DeletePipelineResponse], error)
 }
@@ -215,10 +215,10 @@ func NewPipelineServiceHandler(svc PipelineServiceHandler, opts ...connect.Handl
 		connect.WithSchema(pipelineServiceUpdatePipelineMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	pipelineServiceCreateOrUpdatePipelineHandler := connect.NewUnaryHandler(
-		PipelineServiceCreateOrUpdatePipelineProcedure,
-		svc.CreateOrUpdatePipeline,
-		connect.WithSchema(pipelineServiceCreateOrUpdatePipelineMethodDescriptor),
+	pipelineServiceUpsertPipelineHandler := connect.NewUnaryHandler(
+		PipelineServiceUpsertPipelineProcedure,
+		svc.UpsertPipeline,
+		connect.WithSchema(pipelineServiceUpsertPipelineMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	pipelineServiceDeletePipelineHandler := connect.NewUnaryHandler(
@@ -237,8 +237,8 @@ func NewPipelineServiceHandler(svc PipelineServiceHandler, opts ...connect.Handl
 			pipelineServiceCreatePipelineHandler.ServeHTTP(w, r)
 		case PipelineServiceUpdatePipelineProcedure:
 			pipelineServiceUpdatePipelineHandler.ServeHTTP(w, r)
-		case PipelineServiceCreateOrUpdatePipelineProcedure:
-			pipelineServiceCreateOrUpdatePipelineHandler.ServeHTTP(w, r)
+		case PipelineServiceUpsertPipelineProcedure:
+			pipelineServiceUpsertPipelineHandler.ServeHTTP(w, r)
 		case PipelineServiceDeletePipelineProcedure:
 			pipelineServiceDeletePipelineHandler.ServeHTTP(w, r)
 		default:
@@ -266,8 +266,8 @@ func (UnimplementedPipelineServiceHandler) UpdatePipeline(context.Context, *conn
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pipeline.v1.PipelineService.UpdatePipeline is not implemented"))
 }
 
-func (UnimplementedPipelineServiceHandler) CreateOrUpdatePipeline(context.Context, *connect.Request[v1.UpdatePipelineRequest]) (*connect.Response[v1.Pipeline], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pipeline.v1.PipelineService.CreateOrUpdatePipeline is not implemented"))
+func (UnimplementedPipelineServiceHandler) UpsertPipeline(context.Context, *connect.Request[v1.UpsertPipelineRequest]) (*connect.Response[v1.Pipeline], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pipeline.v1.PipelineService.UpsertPipeline is not implemented"))
 }
 
 func (UnimplementedPipelineServiceHandler) DeletePipeline(context.Context, *connect.Request[v1.DeletePipelineRequest]) (*connect.Response[v1.DeletePipelineResponse], error) {
