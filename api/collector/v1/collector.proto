@@ -16,36 +16,6 @@ message GetConfigResponse {
   string content = 1;
 }
 
-message GetCollectorRequest {
-  string id = 1;
-}
-
-message Collector {
-  string id = 1;
-  map<string, string> metadata = 2;
-}
-
-message ListCollectorsRequest {
-}
-
-message Collectors {
-  repeated Collector collectors = 1;
-}
-
-message CreateCollectorRequest {
-  Collector collector = 1;
-}
-
-message UpdateCollectorRequest {
-  Collector collector = 1;
-}
-
-message DeleteCollectorRequest {
-  string id = 1;
-}
-
-message DeleteCollectorResponse {
-}
 
 // CollectorService is the service that provides remote configuration for the collector.
 // It is used to register and update the collector's metadata, and to fetch the
@@ -55,19 +25,4 @@ service CollectorService {
   rpc GetConfig (GetConfigRequest) returns (GetConfigResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
-
-  // GetCollector returns information about the collector.
-  rpc GetCollector (GetCollectorRequest) returns (Collector);
-
-  // ListCollectors returns information about all collectors.
-  rpc ListCollectors (ListCollectorsRequest) returns (Collectors);
-
-  // CreateCollector registers a new collector.
-  rpc CreateCollector (CreateCollectorRequest) returns (Collector);
-
-  // UpdateCollector updates an existing collector.
-  rpc UpdateCollector (UpdateCollectorRequest) returns (Collector);
-
-  // DeleteCollector deletes an existing collector.
-  rpc DeleteCollector (DeleteCollectorRequest) returns (DeleteCollectorResponse);
 }

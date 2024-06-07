@@ -36,48 +36,18 @@ const (
 	// CollectorServiceGetConfigProcedure is the fully-qualified name of the CollectorService's
 	// GetConfig RPC.
 	CollectorServiceGetConfigProcedure = "/collector.v1.CollectorService/GetConfig"
-	// CollectorServiceGetCollectorProcedure is the fully-qualified name of the CollectorService's
-	// GetCollector RPC.
-	CollectorServiceGetCollectorProcedure = "/collector.v1.CollectorService/GetCollector"
-	// CollectorServiceListCollectorsProcedure is the fully-qualified name of the CollectorService's
-	// ListCollectors RPC.
-	CollectorServiceListCollectorsProcedure = "/collector.v1.CollectorService/ListCollectors"
-	// CollectorServiceCreateCollectorProcedure is the fully-qualified name of the CollectorService's
-	// CreateCollector RPC.
-	CollectorServiceCreateCollectorProcedure = "/collector.v1.CollectorService/CreateCollector"
-	// CollectorServiceUpdateCollectorProcedure is the fully-qualified name of the CollectorService's
-	// UpdateCollector RPC.
-	CollectorServiceUpdateCollectorProcedure = "/collector.v1.CollectorService/UpdateCollector"
-	// CollectorServiceDeleteCollectorProcedure is the fully-qualified name of the CollectorService's
-	// DeleteCollector RPC.
-	CollectorServiceDeleteCollectorProcedure = "/collector.v1.CollectorService/DeleteCollector"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	collectorServiceServiceDescriptor               = v1.File_collector_v1_collector_proto.Services().ByName("CollectorService")
-	collectorServiceGetConfigMethodDescriptor       = collectorServiceServiceDescriptor.Methods().ByName("GetConfig")
-	collectorServiceGetCollectorMethodDescriptor    = collectorServiceServiceDescriptor.Methods().ByName("GetCollector")
-	collectorServiceListCollectorsMethodDescriptor  = collectorServiceServiceDescriptor.Methods().ByName("ListCollectors")
-	collectorServiceCreateCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("CreateCollector")
-	collectorServiceUpdateCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("UpdateCollector")
-	collectorServiceDeleteCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("DeleteCollector")
+	collectorServiceServiceDescriptor         = v1.File_collector_v1_collector_proto.Services().ByName("CollectorService")
+	collectorServiceGetConfigMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("GetConfig")
 )
 
 // CollectorServiceClient is a client for the collector.v1.CollectorService service.
 type CollectorServiceClient interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
-	// GetCollector returns information about the collector.
-	GetCollector(context.Context, *connect.Request[v1.GetCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// ListCollectors returns information about all collectors.
-	ListCollectors(context.Context, *connect.Request[v1.ListCollectorsRequest]) (*connect.Response[v1.Collectors], error)
-	// CreateCollector registers a new collector.
-	CreateCollector(context.Context, *connect.Request[v1.CreateCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// UpdateCollector updates an existing collector.
-	UpdateCollector(context.Context, *connect.Request[v1.UpdateCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// DeleteCollector deletes an existing collector.
-	DeleteCollector(context.Context, *connect.Request[v1.DeleteCollectorRequest]) (*connect.Response[v1.DeleteCollectorResponse], error)
 }
 
 // NewCollectorServiceClient constructs a client for the collector.v1.CollectorService service. By
@@ -97,47 +67,12 @@ func NewCollectorServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
-		getCollector: connect.NewClient[v1.GetCollectorRequest, v1.Collector](
-			httpClient,
-			baseURL+CollectorServiceGetCollectorProcedure,
-			connect.WithSchema(collectorServiceGetCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		listCollectors: connect.NewClient[v1.ListCollectorsRequest, v1.Collectors](
-			httpClient,
-			baseURL+CollectorServiceListCollectorsProcedure,
-			connect.WithSchema(collectorServiceListCollectorsMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createCollector: connect.NewClient[v1.CreateCollectorRequest, v1.Collector](
-			httpClient,
-			baseURL+CollectorServiceCreateCollectorProcedure,
-			connect.WithSchema(collectorServiceCreateCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		updateCollector: connect.NewClient[v1.UpdateCollectorRequest, v1.Collector](
-			httpClient,
-			baseURL+CollectorServiceUpdateCollectorProcedure,
-			connect.WithSchema(collectorServiceUpdateCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		deleteCollector: connect.NewClient[v1.DeleteCollectorRequest, v1.DeleteCollectorResponse](
-			httpClient,
-			baseURL+CollectorServiceDeleteCollectorProcedure,
-			connect.WithSchema(collectorServiceDeleteCollectorMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 	}
 }
 
 // collectorServiceClient implements CollectorServiceClient.
 type collectorServiceClient struct {
-	getConfig       *connect.Client[v1.GetConfigRequest, v1.GetConfigResponse]
-	getCollector    *connect.Client[v1.GetCollectorRequest, v1.Collector]
-	listCollectors  *connect.Client[v1.ListCollectorsRequest, v1.Collectors]
-	createCollector *connect.Client[v1.CreateCollectorRequest, v1.Collector]
-	updateCollector *connect.Client[v1.UpdateCollectorRequest, v1.Collector]
-	deleteCollector *connect.Client[v1.DeleteCollectorRequest, v1.DeleteCollectorResponse]
+	getConfig *connect.Client[v1.GetConfigRequest, v1.GetConfigResponse]
 }
 
 // GetConfig calls collector.v1.CollectorService.GetConfig.
@@ -145,45 +80,10 @@ func (c *collectorServiceClient) GetConfig(ctx context.Context, req *connect.Req
 	return c.getConfig.CallUnary(ctx, req)
 }
 
-// GetCollector calls collector.v1.CollectorService.GetCollector.
-func (c *collectorServiceClient) GetCollector(ctx context.Context, req *connect.Request[v1.GetCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return c.getCollector.CallUnary(ctx, req)
-}
-
-// ListCollectors calls collector.v1.CollectorService.ListCollectors.
-func (c *collectorServiceClient) ListCollectors(ctx context.Context, req *connect.Request[v1.ListCollectorsRequest]) (*connect.Response[v1.Collectors], error) {
-	return c.listCollectors.CallUnary(ctx, req)
-}
-
-// CreateCollector calls collector.v1.CollectorService.CreateCollector.
-func (c *collectorServiceClient) CreateCollector(ctx context.Context, req *connect.Request[v1.CreateCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return c.createCollector.CallUnary(ctx, req)
-}
-
-// UpdateCollector calls collector.v1.CollectorService.UpdateCollector.
-func (c *collectorServiceClient) UpdateCollector(ctx context.Context, req *connect.Request[v1.UpdateCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return c.updateCollector.CallUnary(ctx, req)
-}
-
-// DeleteCollector calls collector.v1.CollectorService.DeleteCollector.
-func (c *collectorServiceClient) DeleteCollector(ctx context.Context, req *connect.Request[v1.DeleteCollectorRequest]) (*connect.Response[v1.DeleteCollectorResponse], error) {
-	return c.deleteCollector.CallUnary(ctx, req)
-}
-
 // CollectorServiceHandler is an implementation of the collector.v1.CollectorService service.
 type CollectorServiceHandler interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
-	// GetCollector returns information about the collector.
-	GetCollector(context.Context, *connect.Request[v1.GetCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// ListCollectors returns information about all collectors.
-	ListCollectors(context.Context, *connect.Request[v1.ListCollectorsRequest]) (*connect.Response[v1.Collectors], error)
-	// CreateCollector registers a new collector.
-	CreateCollector(context.Context, *connect.Request[v1.CreateCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// UpdateCollector updates an existing collector.
-	UpdateCollector(context.Context, *connect.Request[v1.UpdateCollectorRequest]) (*connect.Response[v1.Collector], error)
-	// DeleteCollector deletes an existing collector.
-	DeleteCollector(context.Context, *connect.Request[v1.DeleteCollectorRequest]) (*connect.Response[v1.DeleteCollectorResponse], error)
 }
 
 // NewCollectorServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -199,50 +99,10 @@ func NewCollectorServiceHandler(svc CollectorServiceHandler, opts ...connect.Han
 		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
-	collectorServiceGetCollectorHandler := connect.NewUnaryHandler(
-		CollectorServiceGetCollectorProcedure,
-		svc.GetCollector,
-		connect.WithSchema(collectorServiceGetCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	collectorServiceListCollectorsHandler := connect.NewUnaryHandler(
-		CollectorServiceListCollectorsProcedure,
-		svc.ListCollectors,
-		connect.WithSchema(collectorServiceListCollectorsMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	collectorServiceCreateCollectorHandler := connect.NewUnaryHandler(
-		CollectorServiceCreateCollectorProcedure,
-		svc.CreateCollector,
-		connect.WithSchema(collectorServiceCreateCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	collectorServiceUpdateCollectorHandler := connect.NewUnaryHandler(
-		CollectorServiceUpdateCollectorProcedure,
-		svc.UpdateCollector,
-		connect.WithSchema(collectorServiceUpdateCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	collectorServiceDeleteCollectorHandler := connect.NewUnaryHandler(
-		CollectorServiceDeleteCollectorProcedure,
-		svc.DeleteCollector,
-		connect.WithSchema(collectorServiceDeleteCollectorMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/collector.v1.CollectorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case CollectorServiceGetConfigProcedure:
 			collectorServiceGetConfigHandler.ServeHTTP(w, r)
-		case CollectorServiceGetCollectorProcedure:
-			collectorServiceGetCollectorHandler.ServeHTTP(w, r)
-		case CollectorServiceListCollectorsProcedure:
-			collectorServiceListCollectorsHandler.ServeHTTP(w, r)
-		case CollectorServiceCreateCollectorProcedure:
-			collectorServiceCreateCollectorHandler.ServeHTTP(w, r)
-		case CollectorServiceUpdateCollectorProcedure:
-			collectorServiceUpdateCollectorHandler.ServeHTTP(w, r)
-		case CollectorServiceDeleteCollectorProcedure:
-			collectorServiceDeleteCollectorHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -254,24 +114,4 @@ type UnimplementedCollectorServiceHandler struct{}
 
 func (UnimplementedCollectorServiceHandler) GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.GetConfig is not implemented"))
-}
-
-func (UnimplementedCollectorServiceHandler) GetCollector(context.Context, *connect.Request[v1.GetCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.GetCollector is not implemented"))
-}
-
-func (UnimplementedCollectorServiceHandler) ListCollectors(context.Context, *connect.Request[v1.ListCollectorsRequest]) (*connect.Response[v1.Collectors], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.ListCollectors is not implemented"))
-}
-
-func (UnimplementedCollectorServiceHandler) CreateCollector(context.Context, *connect.Request[v1.CreateCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.CreateCollector is not implemented"))
-}
-
-func (UnimplementedCollectorServiceHandler) UpdateCollector(context.Context, *connect.Request[v1.UpdateCollectorRequest]) (*connect.Response[v1.Collector], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.UpdateCollector is not implemented"))
-}
-
-func (UnimplementedCollectorServiceHandler) DeleteCollector(context.Context, *connect.Request[v1.DeleteCollectorRequest]) (*connect.Response[v1.DeleteCollectorResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.DeleteCollector is not implemented"))
 }
