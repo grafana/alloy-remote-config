@@ -5,11 +5,11 @@ package collector.v1;
 option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/collector/v1;collectorv1";
 
 // GetConfigRequest is the request message to get an collector's configuration.
-// The collector's ID and any supplied metadata are used to determine which
+// The collector's ID and any supplied attributes are used to determine which
 // pipelines to include in the configuration.
 message GetConfigRequest {
   string id = 1;
-  map<string, string> metadata = 2;
+  map<string, string> attributes = 2;
 }
 
 message GetConfigResponse {
@@ -18,7 +18,7 @@ message GetConfigResponse {
 
 
 // CollectorService is the service that provides remote configuration for the collector.
-// It is used to register and update the collector's metadata, and to fetch the
+// It is used to register and update the collector's attributes, and to fetch the
 // collector's configuration.
 service CollectorService {
   // GetConfig returns the collector's configuration. 
