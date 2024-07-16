@@ -10,7 +10,6 @@ option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/col
 message GetConfigRequest {
   string id = 1;
   map<string, string> attributes = 2;
-  bool is_collector = 3;
 }
 
 message GetConfigResponse {
@@ -39,7 +38,7 @@ message UnregisterCollectorResponse {
 service CollectorService {
   // GetConfig returns the collector's configuration. 
   rpc GetConfig (GetConfigRequest) returns (GetConfigResponse) {
-    option idempotency_level = IDEMPOTENT;
+    option idempotency_level = NO_SIDE_EFFECTS;
   };
 
   // RegisterCollector registers the collector with the given ID and attributes. It will

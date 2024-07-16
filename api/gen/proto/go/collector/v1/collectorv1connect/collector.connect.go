@@ -78,7 +78,7 @@ func NewCollectorServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			httpClient,
 			baseURL+CollectorServiceGetConfigProcedure,
 			connect.WithSchema(collectorServiceGetConfigMethodDescriptor),
-			connect.WithIdempotency(connect.IdempotencyIdempotent),
+			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
 		registerCollector: connect.NewClient[v1.RegisterCollectorRequest, v1.RegisterCollectorResponse](
@@ -141,7 +141,7 @@ func NewCollectorServiceHandler(svc CollectorServiceHandler, opts ...connect.Han
 		CollectorServiceGetConfigProcedure,
 		svc.GetConfig,
 		connect.WithSchema(collectorServiceGetConfigMethodDescriptor),
-		connect.WithIdempotency(connect.IdempotencyIdempotent),
+		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
 	collectorServiceRegisterCollectorHandler := connect.NewUnaryHandler(
