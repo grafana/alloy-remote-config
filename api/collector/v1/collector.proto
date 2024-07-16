@@ -16,6 +16,21 @@ message GetConfigResponse {
   string content = 1;
 }
 
+message RegisterCollectorRequest {
+  string id = 1;
+  map<string, string> attributes = 2;
+}
+
+message RegisterCollectorResponse {
+}
+
+message UnregisterCollectorRequest {
+  string id = 1;
+}
+
+message UnregisterCollectorResponse {
+}
+
 
 // CollectorService is the service that provides remote configuration for the collector.
 // It is used to register and update the collector's attributes, and to fetch the
@@ -24,5 +39,17 @@ service CollectorService {
   // GetConfig returns the collector's configuration. 
   rpc GetConfig (GetConfigRequest) returns (GetConfigResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
+  };
+
+  // RegisterCollector registers the collector with the given ID and attributes. It will
+  // update the collector's attributes if the collector is already registered and the
+  // attributes are different.
+  rpc RegisterCollector (RegisterCollectorRequest) returns (RegisterCollectorResponse) {
+    option idempotency_level = IDEMPOTENT;
+  };
+
+  // UnregisterCollector unregisters the collector with the given ID.
+  rpc UnregisterCollector (UnregisterCollectorRequest) returns (UnregisterCollectorResponse) {
+    option idempotency_level = IDEMPOTENCY_UNKNOWN;
   };
 }

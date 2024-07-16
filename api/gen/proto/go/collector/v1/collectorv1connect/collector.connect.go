@@ -36,18 +36,32 @@ const (
 	// CollectorServiceGetConfigProcedure is the fully-qualified name of the CollectorService's
 	// GetConfig RPC.
 	CollectorServiceGetConfigProcedure = "/collector.v1.CollectorService/GetConfig"
+	// CollectorServiceRegisterCollectorProcedure is the fully-qualified name of the CollectorService's
+	// RegisterCollector RPC.
+	CollectorServiceRegisterCollectorProcedure = "/collector.v1.CollectorService/RegisterCollector"
+	// CollectorServiceUnregisterCollectorProcedure is the fully-qualified name of the
+	// CollectorService's UnregisterCollector RPC.
+	CollectorServiceUnregisterCollectorProcedure = "/collector.v1.CollectorService/UnregisterCollector"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	collectorServiceServiceDescriptor         = v1.File_collector_v1_collector_proto.Services().ByName("CollectorService")
-	collectorServiceGetConfigMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("GetConfig")
+	collectorServiceServiceDescriptor                   = v1.File_collector_v1_collector_proto.Services().ByName("CollectorService")
+	collectorServiceGetConfigMethodDescriptor           = collectorServiceServiceDescriptor.Methods().ByName("GetConfig")
+	collectorServiceRegisterCollectorMethodDescriptor   = collectorServiceServiceDescriptor.Methods().ByName("RegisterCollector")
+	collectorServiceUnregisterCollectorMethodDescriptor = collectorServiceServiceDescriptor.Methods().ByName("UnregisterCollector")
 )
 
 // CollectorServiceClient is a client for the collector.v1.CollectorService service.
 type CollectorServiceClient interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
+	// RegisterCollector registers the collector with the given ID and attributes. It will
+	// update the collector's attributes if the collector is already registered and the
+	// attributes are different.
+	RegisterCollector(context.Context, *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error)
+	// UnregisterCollector unregisters the collector with the given ID.
+	UnregisterCollector(context.Context, *connect.Request[v1.UnregisterCollectorRequest]) (*connect.Response[v1.UnregisterCollectorResponse], error)
 }
 
 // NewCollectorServiceClient constructs a client for the collector.v1.CollectorService service. By
@@ -67,12 +81,27 @@ func NewCollectorServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
+		registerCollector: connect.NewClient[v1.RegisterCollectorRequest, v1.RegisterCollectorResponse](
+			httpClient,
+			baseURL+CollectorServiceRegisterCollectorProcedure,
+			connect.WithSchema(collectorServiceRegisterCollectorMethodDescriptor),
+			connect.WithIdempotency(connect.IdempotencyIdempotent),
+			connect.WithClientOptions(opts...),
+		),
+		unregisterCollector: connect.NewClient[v1.UnregisterCollectorRequest, v1.UnregisterCollectorResponse](
+			httpClient,
+			baseURL+CollectorServiceUnregisterCollectorProcedure,
+			connect.WithSchema(collectorServiceUnregisterCollectorMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // collectorServiceClient implements CollectorServiceClient.
 type collectorServiceClient struct {
-	getConfig *connect.Client[v1.GetConfigRequest, v1.GetConfigResponse]
+	getConfig           *connect.Client[v1.GetConfigRequest, v1.GetConfigResponse]
+	registerCollector   *connect.Client[v1.RegisterCollectorRequest, v1.RegisterCollectorResponse]
+	unregisterCollector *connect.Client[v1.UnregisterCollectorRequest, v1.UnregisterCollectorResponse]
 }
 
 // GetConfig calls collector.v1.CollectorService.GetConfig.
@@ -80,10 +109,26 @@ func (c *collectorServiceClient) GetConfig(ctx context.Context, req *connect.Req
 	return c.getConfig.CallUnary(ctx, req)
 }
 
+// RegisterCollector calls collector.v1.CollectorService.RegisterCollector.
+func (c *collectorServiceClient) RegisterCollector(ctx context.Context, req *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error) {
+	return c.registerCollector.CallUnary(ctx, req)
+}
+
+// UnregisterCollector calls collector.v1.CollectorService.UnregisterCollector.
+func (c *collectorServiceClient) UnregisterCollector(ctx context.Context, req *connect.Request[v1.UnregisterCollectorRequest]) (*connect.Response[v1.UnregisterCollectorResponse], error) {
+	return c.unregisterCollector.CallUnary(ctx, req)
+}
+
 // CollectorServiceHandler is an implementation of the collector.v1.CollectorService service.
 type CollectorServiceHandler interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
+	// RegisterCollector registers the collector with the given ID and attributes. It will
+	// update the collector's attributes if the collector is already registered and the
+	// attributes are different.
+	RegisterCollector(context.Context, *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error)
+	// UnregisterCollector unregisters the collector with the given ID.
+	UnregisterCollector(context.Context, *connect.Request[v1.UnregisterCollectorRequest]) (*connect.Response[v1.UnregisterCollectorResponse], error)
 }
 
 // NewCollectorServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -99,10 +144,27 @@ func NewCollectorServiceHandler(svc CollectorServiceHandler, opts ...connect.Han
 		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
+	collectorServiceRegisterCollectorHandler := connect.NewUnaryHandler(
+		CollectorServiceRegisterCollectorProcedure,
+		svc.RegisterCollector,
+		connect.WithSchema(collectorServiceRegisterCollectorMethodDescriptor),
+		connect.WithIdempotency(connect.IdempotencyIdempotent),
+		connect.WithHandlerOptions(opts...),
+	)
+	collectorServiceUnregisterCollectorHandler := connect.NewUnaryHandler(
+		CollectorServiceUnregisterCollectorProcedure,
+		svc.UnregisterCollector,
+		connect.WithSchema(collectorServiceUnregisterCollectorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/collector.v1.CollectorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case CollectorServiceGetConfigProcedure:
 			collectorServiceGetConfigHandler.ServeHTTP(w, r)
+		case CollectorServiceRegisterCollectorProcedure:
+			collectorServiceRegisterCollectorHandler.ServeHTTP(w, r)
+		case CollectorServiceUnregisterCollectorProcedure:
+			collectorServiceUnregisterCollectorHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -114,4 +176,12 @@ type UnimplementedCollectorServiceHandler struct{}
 
 func (UnimplementedCollectorServiceHandler) GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.GetConfig is not implemented"))
+}
+
+func (UnimplementedCollectorServiceHandler) RegisterCollector(context.Context, *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.RegisterCollector is not implemented"))
+}
+
+func (UnimplementedCollectorServiceHandler) UnregisterCollector(context.Context, *connect.Request[v1.UnregisterCollectorRequest]) (*connect.Response[v1.UnregisterCollectorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("collector.v1.CollectorService.UnregisterCollector is not implemented"))
 }
