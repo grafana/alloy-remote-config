@@ -19,6 +19,7 @@ message GetConfigResponse {
 message RegisterCollectorRequest {
   string id = 1;
   map<string, string> attributes = 2;
+  string name = 3;
 }
 
 message RegisterCollectorResponse {
