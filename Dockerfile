@@ -1,15 +1,15 @@
-FROM bufbuild/buf:latest as buf
+FROM bufbuild/buf:1.43.0 as buf
 
-FROM golang:1.22.1
+FROM golang:1.23.2
 
 # Copy the buf binary from the buf image to the final image
 COPY --from=buf /usr/local/bin/buf /usr/local/bin/buf
 
 # Install protoc-gen-go
-RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.32.0
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.2
 
 # Install protoc-gen-connect-go
-RUN go install connectrpc.com/connect/cmd/protoc-gen-connect-go@v1.16.2
+RUN go install connectrpc.com/connect/cmd/protoc-gen-connect-go@v1.17.0
 
 # Set the working directory inside the container
 WORKDIR /api
