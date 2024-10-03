@@ -10,10 +10,19 @@ option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/col
 message GetConfigRequest {
   string id = 1;
   map<string, string> attributes = 2;
+
+  // Hash is used to determine if the configuration has changed.
+  string hash = 3;
 }
 
 message GetConfigResponse {
   string content = 1;
+
+  // Hash is used to determine if the configuration has changed.
+  string hash = 2;
+  // not_modified is set to true if the configuration has not changed and
+  // the client should not update its configuration from the response.
+  bool not_modified = 3;
 }
 
 message RegisterCollectorRequest {
