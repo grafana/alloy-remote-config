@@ -8,33 +8,46 @@ option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/col
 // The collector's ID and any supplied attributes are used to determine which
 // pipelines to include in the configuration.
 message GetConfigRequest {
+  // (required) The ID of the collector to get the configuration for.
   string id = 1;
 
   // DEPRECATED. Use local_atttributes instead.
   map<string, string> attributes = 2 [deprecated=true];
 
+  // Attributes are key=value pairs that are used to determine which pipelines
+  // to include in the remote configuration.
   map<string, string> local_attributes = 4;
-
 
   // Hash is used to determine if the configuration has changed.
   string hash = 3;
 }
 
+// GetConfigResponse is the server->collector response message that contains the
+// collector's configuration.
 message GetConfigResponse {
+  // The full configuration for the collector.
   string content = 1;
 
-  // Hash is used to determine if the configuration has changed.
+  // hash is used to determine if the configuration has changed, and avoid
+  // sending the full configuration if it has not.
   string hash = 2;
+
   // not_modified is set to true if the configuration has not changed and
   // the client should not update its configuration from the response.
   bool not_modified = 3;
 }
 
 message RegisterCollectorRequest {
+  // (required) The ID of the collector to register.
   string id = 1;
+
   // DEPRECATED. Use local_atttributes instead.
   map<string, string> attributes = 2;
+
+  // The local attributes the collector uses to self-identify on registration.
   map<string, string> local_attributes = 4;
+
+  // The name of the collector
   string name = 3;
 }
 

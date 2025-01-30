@@ -28,11 +28,14 @@ type GetConfigRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// (required) The ID of the collector to get the configuration for.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// DEPRECATED. Use local_atttributes instead.
 	//
 	// Deprecated: Marked as deprecated in collector/v1/collector.proto.
-	Attributes      map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Attributes are key=value pairs that are used to determine which pipelines
+	// to include in the remote configuration.
 	LocalAttributes map[string]string `protobuf:"bytes,4,rep,name=local_attributes,json=localAttributes,proto3" json:"local_attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Hash is used to determine if the configuration has changed.
 	Hash string `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
@@ -99,13 +102,17 @@ func (x *GetConfigRequest) GetHash() string {
 	return ""
 }
 
+// GetConfigResponse is the server->collector response message that contains the
+// collector's configuration.
 type GetConfigResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The full configuration for the collector.
 	Content string `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
-	// Hash is used to determine if the configuration has changed.
+	// hash is used to determine if the configuration has changed, and avoid
+	// sending the full configuration if it has not.
 	Hash string `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
 	// not_modified is set to true if the configuration has not changed and
 	// the client should not update its configuration from the response.
@@ -170,11 +177,14 @@ type RegisterCollectorRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// (required) The ID of the collector to register.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// DEPRECATED. Use local_atttributes instead.
-	Attributes      map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The local attributes the collector uses to self-identify on registration.
 	LocalAttributes map[string]string `protobuf:"bytes,4,rep,name=local_attributes,json=localAttributes,proto3" json:"local_attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Name            string            `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// The name of the collector
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (x *RegisterCollectorRequest) Reset() {
