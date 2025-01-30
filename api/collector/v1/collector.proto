@@ -61,7 +61,6 @@ message UnregisterCollectorRequest {
 message UnregisterCollectorResponse {
 }
 
-
 // CollectorService is the service that provides remote configuration for the collector.
 // It is used to register and update the collector's local attributes, and to fetch the
 // collector's configuration.
