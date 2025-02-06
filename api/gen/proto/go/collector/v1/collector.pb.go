@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GetConfigRequest is the request message to get an collector's configuration.
+// GetConfigRequest is the request message to get a collector's configuration.
 // The collector's ID and any supplied attributes are used to determine which
 // pipelines to include in the configuration.
 type GetConfigRequest struct {
