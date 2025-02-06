@@ -4,30 +4,50 @@ package collector.v1;
 
 option go_package = "github.com/grafana/alloy-remote-config/api/gen/proto/go/collector/v1;collectorv1";
 
-// GetConfigRequest is the request message to get an collector's configuration.
+// GetConfigRequest is the request message to get a collector's configuration.
 // The collector's ID and any supplied attributes are used to determine which
 // pipelines to include in the configuration.
 message GetConfigRequest {
+  // (required) The ID of the collector to get the configuration for.
   string id = 1;
-  map<string, string> attributes = 2;
+
+  // DEPRECATED. Use local_attributes instead.
+  map<string, string> attributes = 2 [deprecated=true];
+
+  // Attributes are key=value pairs that are used to determine which pipelines
+  // to include in the remote configuration.
+  map<string, string> local_attributes = 4;
 
   // Hash is used to determine if the configuration has changed.
   string hash = 3;
 }
 
+// GetConfigResponse is the server->collector response message that contains the
+// collector's configuration.
 message GetConfigResponse {
+  // The full configuration for the collector.
   string content = 1;
 
-  // Hash is used to determine if the configuration has changed.
+  // hash is used to determine if the configuration has changed, and avoid
+  // sending the full configuration if it has not.
   string hash = 2;
+
   // not_modified is set to true if the configuration has not changed and
   // the client should not update its configuration from the response.
   bool not_modified = 3;
 }
 
 message RegisterCollectorRequest {
+  // (required) The ID of the collector to register.
   string id = 1;
+
+  // DEPRECATED. Use local_attributes instead.
   map<string, string> attributes = 2;
+
+  // The local attributes the collector uses to self-identify on registration.
+  map<string, string> local_attributes = 4;
+
+  // The name of the collector
   string name = 3;
 }
 
@@ -41,17 +61,15 @@ message UnregisterCollectorRequest {
 message UnregisterCollectorResponse {
 }
 
-
 // CollectorService is the service that provides remote configuration for the collector.
-// It is used to register and update the collector's attributes, and to fetch the
-// collector's configuration.
+// It is used to register collectors, and to fetch their configuration.
 service CollectorService {
   // GetConfig returns the collector's configuration. 
   rpc GetConfig (GetConfigRequest) returns (GetConfigResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
 
-  // RegisterCollector registers the collector with the given ID and attributes. It will
+  // RegisterCollector registers the collector with the given ID and local attributes. It will
   // update the collector's attributes if the collector is already registered and the
   // attributes are different.
   rpc RegisterCollector (RegisterCollectorRequest) returns (RegisterCollectorResponse) {

@@ -56,7 +56,7 @@ var (
 type CollectorServiceClient interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
-	// RegisterCollector registers the collector with the given ID and attributes. It will
+	// RegisterCollector registers the collector with the given ID and local attributes. It will
 	// update the collector's attributes if the collector is already registered and the
 	// attributes are different.
 	RegisterCollector(context.Context, *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error)
@@ -123,7 +123,7 @@ func (c *collectorServiceClient) UnregisterCollector(ctx context.Context, req *c
 type CollectorServiceHandler interface {
 	// GetConfig returns the collector's configuration.
 	GetConfig(context.Context, *connect.Request[v1.GetConfigRequest]) (*connect.Response[v1.GetConfigResponse], error)
-	// RegisterCollector registers the collector with the given ID and attributes. It will
+	// RegisterCollector registers the collector with the given ID and local attributes. It will
 	// update the collector's attributes if the collector is already registered and the
 	// attributes are different.
 	RegisterCollector(context.Context, *connect.Request[v1.RegisterCollectorRequest]) (*connect.Response[v1.RegisterCollectorResponse], error)
