@@ -30,7 +30,7 @@ type GetConfigRequest struct {
 
 	// (required) The ID of the collector to get the configuration for.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// DEPRECATED. Use local_atttributes instead.
+	// DEPRECATED. Use local_attributes instead.
 	//
 	// Deprecated: Marked as deprecated in collector/v1/collector.proto.
 	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
@@ -179,7 +179,7 @@ type RegisterCollectorRequest struct {
 
 	// (required) The ID of the collector to register.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// DEPRECATED. Use local_atttributes instead.
+	// DEPRECATED. Use local_attributes instead.
 	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// The local attributes the collector uses to self-identify on registration.
 	LocalAttributes map[string]string `protobuf:"bytes,4,rep,name=local_attributes,json=localAttributes,proto3" json:"local_attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`

@@ -11,7 +11,7 @@ message GetConfigRequest {
   // (required) The ID of the collector to get the configuration for.
   string id = 1;
 
-  // DEPRECATED. Use local_atttributes instead.
+  // DEPRECATED. Use local_attributes instead.
   map<string, string> attributes = 2 [deprecated=true];
 
   // Attributes are key=value pairs that are used to determine which pipelines
@@ -41,7 +41,7 @@ message RegisterCollectorRequest {
   // (required) The ID of the collector to register.
   string id = 1;
 
-  // DEPRECATED. Use local_atttributes instead.
+  // DEPRECATED. Use local_attributes instead.
   map<string, string> attributes = 2;
 
   // The local attributes the collector uses to self-identify on registration.
