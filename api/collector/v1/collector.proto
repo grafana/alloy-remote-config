@@ -20,6 +20,33 @@ message GetConfigRequest {
 
   // Hash is used to determine if the configuration has changed.
   string hash = 3;
+
+  // The status of the remote config that was previously received from the Server.
+  // This field SHOULD be unset if the remote config status is unchanged since the
+  // last GetConfigRequest message.
+  RemoteConfigStatus remote_config_status = 5;
+}
+
+message RemoteConfigStatus {
+    RemoteConfigStatuses status = 1;
+
+    // Optional error message if status==FAILED.
+    string error_message = 2;
+}
+
+enum RemoteConfigStatuses {
+    // The value of status field is not set.
+    RemoteConfigStatuses_UNSET = 0;
+
+    // Remote config was successfully applied by the Collector.
+    RemoteConfigStatuses_APPLIED = 1;
+
+    // Collector is currently applying the remote config that it received earlier.
+    RemoteConfigStatuses_APPLYING = 2;
+
+    // Collector tried to apply the config received earlier, but it failed.
+    // See error_message for more details.
+    RemoteConfigStatuses_FAILED = 3;
 }
 
 // GetConfigResponse is the server->collector response message that contains the
