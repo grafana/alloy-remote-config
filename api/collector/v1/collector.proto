@@ -25,6 +25,15 @@ message GetConfigRequest {
   // This field SHOULD be unset if the remote config status is unchanged since the
   // last GetConfigRequest message.
   RemoteConfigStatus remote_config_status = 5;
+
+  // The current effective configuration of the Collector. The effective configuration is
+  // the one that is currently used by the Collector. The effective configuration may be
+  // different from the remote configuration received from the Server earlier, e.g.
+  // because the Collector uses a local configuration instead (or in addition).
+  //
+  // This field SHOULD be unset if the effective config is unchanged since the last
+  // GetConfigRequest message.
+  EffectiveConfig effective_config = 6;
 }
 
 message RemoteConfigStatus {
@@ -47,6 +56,30 @@ enum RemoteConfigStatuses {
     // Collector tried to apply the config received earlier, but it failed.
     // See error_message for more details.
     RemoteConfigStatuses_FAILED = 3;
+}
+
+message EffectiveConfig {
+    // The effective config of the Collector.
+    AgentConfigMap config_map = 1;
+}
+
+message AgentConfigMap {
+    // Map of configs. Keys are config file names or config section names.
+    // The configuration is assumed to be a collection of one or more named config files
+    // or sections.
+    // For collector that use a single config file or section the map SHOULD contain a single
+    // entry and the key may be an empty string.
+    map<string, AgentConfigFile> config_map = 1;
+}
+
+message AgentConfigFile {
+    // Config file or section body. The content, format and encoding depends on the Collector
+    // type. The content_type field may optionally describe the MIME type of the body.
+    bytes body = 1;
+
+    // Optional MIME Content-Type that describes what's in the body field, for
+    // example "text/yaml".
+    string content_type = 2;
 }
 
 // GetConfigResponse is the server->collector response message that contains the

@@ -100,6 +100,14 @@ type GetConfigRequest struct {
 	// This field SHOULD be unset if the remote config status is unchanged since the
 	// last GetConfigRequest message.
 	RemoteConfigStatus *RemoteConfigStatus `protobuf:"bytes,5,opt,name=remote_config_status,json=remoteConfigStatus,proto3" json:"remote_config_status,omitempty"`
+	// The current effective configuration of the Collector. The effective configuration is
+	// the one that is currently used by the Collector. The effective configuration may be
+	// different from the remote configuration received from the Server earlier, e.g.
+	// because the Collector uses a local configuration instead (or in addition).
+	//
+	// This field SHOULD be unset if the effective config is unchanged since the last
+	// GetConfigRequest message.
+	EffectiveConfig *EffectiveConfig `protobuf:"bytes,6,opt,name=effective_config,json=effectiveConfig,proto3" json:"effective_config,omitempty"`
 }
 
 func (x *GetConfigRequest) Reset() {
@@ -170,6 +178,13 @@ func (x *GetConfigRequest) GetRemoteConfigStatus() *RemoteConfigStatus {
 	return nil
 }
 
+func (x *GetConfigRequest) GetEffectiveConfig() *EffectiveConfig {
+	if x != nil {
+		return x.EffectiveConfig
+	}
+	return nil
+}
+
 type RemoteConfigStatus struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -226,6 +241,165 @@ func (x *RemoteConfigStatus) GetErrorMessage() string {
 	return ""
 }
 
+type EffectiveConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The effective config of the Collector.
+	ConfigMap *AgentConfigMap `protobuf:"bytes,1,opt,name=config_map,json=configMap,proto3" json:"config_map,omitempty"`
+}
+
+func (x *EffectiveConfig) Reset() {
+	*x = EffectiveConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_collector_v1_collector_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EffectiveConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EffectiveConfig) ProtoMessage() {}
+
+func (x *EffectiveConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_collector_v1_collector_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EffectiveConfig.ProtoReflect.Descriptor instead.
+func (*EffectiveConfig) Descriptor() ([]byte, []int) {
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *EffectiveConfig) GetConfigMap() *AgentConfigMap {
+	if x != nil {
+		return x.ConfigMap
+	}
+	return nil
+}
+
+type AgentConfigMap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Map of configs. Keys are config file names or config section names.
+	// The configuration is assumed to be a collection of one or more named config files
+	// or sections.
+	// For collector that use a single config file or section the map SHOULD contain a single
+	// entry and the key may be an empty string.
+	ConfigMap map[string]*AgentConfigFile `protobuf:"bytes,1,rep,name=config_map,json=configMap,proto3" json:"config_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *AgentConfigMap) Reset() {
+	*x = AgentConfigMap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_collector_v1_collector_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AgentConfigMap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AgentConfigMap) ProtoMessage() {}
+
+func (x *AgentConfigMap) ProtoReflect() protoreflect.Message {
+	mi := &file_collector_v1_collector_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AgentConfigMap.ProtoReflect.Descriptor instead.
+func (*AgentConfigMap) Descriptor() ([]byte, []int) {
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AgentConfigMap) GetConfigMap() map[string]*AgentConfigFile {
+	if x != nil {
+		return x.ConfigMap
+	}
+	return nil
+}
+
+type AgentConfigFile struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Config file or section body. The content, format and encoding depends on the Collector
+	// type. The content_type field may optionally describe the MIME type of the body.
+	Body []byte `protobuf:"bytes,1,opt,name=body,proto3" json:"body,omitempty"`
+	// Optional MIME Content-Type that describes what's in the body field, for
+	// example "text/yaml".
+	ContentType string `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
+}
+
+func (x *AgentConfigFile) Reset() {
+	*x = AgentConfigFile{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_collector_v1_collector_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AgentConfigFile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AgentConfigFile) ProtoMessage() {}
+
+func (x *AgentConfigFile) ProtoReflect() protoreflect.Message {
+	mi := &file_collector_v1_collector_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AgentConfigFile.ProtoReflect.Descriptor instead.
+func (*AgentConfigFile) Descriptor() ([]byte, []int) {
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AgentConfigFile) GetBody() []byte {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *AgentConfigFile) GetContentType() string {
+	if x != nil {
+		return x.ContentType
+	}
+	return ""
+}
+
 // GetConfigResponse is the server->collector response message that contains the
 // collector's configuration.
 type GetConfigResponse struct {
@@ -246,7 +420,7 @@ type GetConfigResponse struct {
 func (x *GetConfigResponse) Reset() {
 	*x = GetConfigResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_collector_v1_collector_proto_msgTypes[2]
+		mi := &file_collector_v1_collector_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -259,7 +433,7 @@ func (x *GetConfigResponse) String() string {
 func (*GetConfigResponse) ProtoMessage() {}
 
 func (x *GetConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_v1_collector_proto_msgTypes[2]
+	mi := &file_collector_v1_collector_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +446,7 @@ func (x *GetConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfigResponse.ProtoReflect.Descriptor instead.
 func (*GetConfigResponse) Descriptor() ([]byte, []int) {
-	return file_collector_v1_collector_proto_rawDescGZIP(), []int{2}
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetConfigResponse) GetContent() string {
@@ -314,7 +488,7 @@ type RegisterCollectorRequest struct {
 func (x *RegisterCollectorRequest) Reset() {
 	*x = RegisterCollectorRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_collector_v1_collector_proto_msgTypes[3]
+		mi := &file_collector_v1_collector_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -327,7 +501,7 @@ func (x *RegisterCollectorRequest) String() string {
 func (*RegisterCollectorRequest) ProtoMessage() {}
 
 func (x *RegisterCollectorRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_v1_collector_proto_msgTypes[3]
+	mi := &file_collector_v1_collector_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -340,7 +514,7 @@ func (x *RegisterCollectorRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterCollectorRequest.ProtoReflect.Descriptor instead.
 func (*RegisterCollectorRequest) Descriptor() ([]byte, []int) {
-	return file_collector_v1_collector_proto_rawDescGZIP(), []int{3}
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *RegisterCollectorRequest) GetId() string {
@@ -380,7 +554,7 @@ type RegisterCollectorResponse struct {
 func (x *RegisterCollectorResponse) Reset() {
 	*x = RegisterCollectorResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_collector_v1_collector_proto_msgTypes[4]
+		mi := &file_collector_v1_collector_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -393,7 +567,7 @@ func (x *RegisterCollectorResponse) String() string {
 func (*RegisterCollectorResponse) ProtoMessage() {}
 
 func (x *RegisterCollectorResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_v1_collector_proto_msgTypes[4]
+	mi := &file_collector_v1_collector_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -406,7 +580,7 @@ func (x *RegisterCollectorResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterCollectorResponse.ProtoReflect.Descriptor instead.
 func (*RegisterCollectorResponse) Descriptor() ([]byte, []int) {
-	return file_collector_v1_collector_proto_rawDescGZIP(), []int{4}
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{7}
 }
 
 type UnregisterCollectorRequest struct {
@@ -420,7 +594,7 @@ type UnregisterCollectorRequest struct {
 func (x *UnregisterCollectorRequest) Reset() {
 	*x = UnregisterCollectorRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_collector_v1_collector_proto_msgTypes[5]
+		mi := &file_collector_v1_collector_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -433,7 +607,7 @@ func (x *UnregisterCollectorRequest) String() string {
 func (*UnregisterCollectorRequest) ProtoMessage() {}
 
 func (x *UnregisterCollectorRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_v1_collector_proto_msgTypes[5]
+	mi := &file_collector_v1_collector_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -446,7 +620,7 @@ func (x *UnregisterCollectorRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnregisterCollectorRequest.ProtoReflect.Descriptor instead.
 func (*UnregisterCollectorRequest) Descriptor() ([]byte, []int) {
-	return file_collector_v1_collector_proto_rawDescGZIP(), []int{5}
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UnregisterCollectorRequest) GetId() string {
@@ -465,7 +639,7 @@ type UnregisterCollectorResponse struct {
 func (x *UnregisterCollectorResponse) Reset() {
 	*x = UnregisterCollectorResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_collector_v1_collector_proto_msgTypes[6]
+		mi := &file_collector_v1_collector_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -478,7 +652,7 @@ func (x *UnregisterCollectorResponse) String() string {
 func (*UnregisterCollectorResponse) ProtoMessage() {}
 
 func (x *UnregisterCollectorResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_collector_v1_collector_proto_msgTypes[6]
+	mi := &file_collector_v1_collector_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -491,7 +665,7 @@ func (x *UnregisterCollectorResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnregisterCollectorResponse.ProtoReflect.Descriptor instead.
 func (*UnregisterCollectorResponse) Descriptor() ([]byte, []int) {
-	return file_collector_v1_collector_proto_rawDescGZIP(), []int{6}
+	return file_collector_v1_collector_proto_rawDescGZIP(), []int{9}
 }
 
 var File_collector_v1_collector_proto protoreflect.FileDescriptor
@@ -499,7 +673,7 @@ var File_collector_v1_collector_proto protoreflect.FileDescriptor
 var file_collector_v1_collector_proto_rawDesc = []byte{
 	0x0a, 0x1c, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2f, 0x76, 0x31, 0x2f, 0x63,
 	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0c,
-	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x22, 0xc1, 0x03, 0x0a,
+	0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x22, 0x8b, 0x04, 0x0a,
 	0x10, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
 	0x64, 0x12, 0x52, 0x0a, 0x0a, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x18,
@@ -519,23 +693,49 @@ var file_collector_v1_collector_proto_rawDesc = []byte{
 	0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63,
 	0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e,
 	0x66, 0x69, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x12, 0x72, 0x65, 0x6d, 0x6f, 0x74,
-	0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x1a, 0x3d, 0x0a,
-	0x0f, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
-	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
-	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x42, 0x0a, 0x14,
-	0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01,
-	0x22, 0x75, 0x0a, 0x12, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x3a, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x22, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
-	0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x65, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x5f, 0x6d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x65, 0x72, 0x72, 0x6f, 0x72,
-	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x64, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x43, 0x6f,
+	0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x48, 0x0a,
+	0x10, 0x65, 0x66, 0x66, 0x65, 0x63, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63,
+	0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x66, 0x66, 0x65, 0x63, 0x74, 0x69, 0x76, 0x65,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x0f, 0x65, 0x66, 0x66, 0x65, 0x63, 0x74, 0x69, 0x76,
+	0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x1a, 0x3d, 0x0a, 0x0f, 0x41, 0x74, 0x74, 0x72, 0x69,
+	0x62, 0x75, 0x74, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x42, 0x0a, 0x14, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x41,
+	0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x75, 0x0a, 0x12, 0x52, 0x65,
+	0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x12, 0x3a, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x22, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e,
+	0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x65, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x23, 0x0a, 0x0d,
+	0x65, 0x72, 0x72, 0x6f, 0x72, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x22, 0x4e, 0x0a, 0x0f, 0x45, 0x66, 0x66, 0x65, 0x63, 0x74, 0x69, 0x76, 0x65, 0x43, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x12, 0x3b, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x5f, 0x6d,
+	0x61, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65,
+	0x63, 0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x4d, 0x61, 0x70, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4d, 0x61,
+	0x70, 0x22, 0xb9, 0x01, 0x0a, 0x0e, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x4d, 0x61, 0x70, 0x12, 0x4a, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x5f, 0x6d,
+	0x61, 0x70, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65,
+	0x63, 0x74, 0x6f, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x4d, 0x61, 0x70, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4d, 0x61, 0x70,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4d, 0x61, 0x70,
+	0x1a, 0x5b, 0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x4d, 0x61, 0x70, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6b, 0x65, 0x79, 0x12, 0x33, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2e,
+	0x76, 0x31, 0x2e, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x46, 0x69,
+	0x6c, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x48, 0x0a,
+	0x0f, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x46, 0x69, 0x6c, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04,
+	0x62, 0x6f, 0x64, 0x79, 0x12, 0x21, 0x0a, 0x0c, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x5f,
+	0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6e, 0x74,
+	0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x22, 0x64, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x43, 0x6f,
 	0x6e, 0x66, 0x69, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07,
 	0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63,
 	0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x68, 0x61, 0x73, 0x68, 0x18, 0x02,
@@ -624,39 +824,47 @@ func file_collector_v1_collector_proto_rawDescGZIP() []byte {
 }
 
 var file_collector_v1_collector_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_collector_v1_collector_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_collector_v1_collector_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_collector_v1_collector_proto_goTypes = []any{
 	(RemoteConfigStatuses)(0),           // 0: collector.v1.RemoteConfigStatuses
 	(*GetConfigRequest)(nil),            // 1: collector.v1.GetConfigRequest
 	(*RemoteConfigStatus)(nil),          // 2: collector.v1.RemoteConfigStatus
-	(*GetConfigResponse)(nil),           // 3: collector.v1.GetConfigResponse
-	(*RegisterCollectorRequest)(nil),    // 4: collector.v1.RegisterCollectorRequest
-	(*RegisterCollectorResponse)(nil),   // 5: collector.v1.RegisterCollectorResponse
-	(*UnregisterCollectorRequest)(nil),  // 6: collector.v1.UnregisterCollectorRequest
-	(*UnregisterCollectorResponse)(nil), // 7: collector.v1.UnregisterCollectorResponse
-	nil,                                 // 8: collector.v1.GetConfigRequest.AttributesEntry
-	nil,                                 // 9: collector.v1.GetConfigRequest.LocalAttributesEntry
-	nil,                                 // 10: collector.v1.RegisterCollectorRequest.AttributesEntry
-	nil,                                 // 11: collector.v1.RegisterCollectorRequest.LocalAttributesEntry
+	(*EffectiveConfig)(nil),             // 3: collector.v1.EffectiveConfig
+	(*AgentConfigMap)(nil),              // 4: collector.v1.AgentConfigMap
+	(*AgentConfigFile)(nil),             // 5: collector.v1.AgentConfigFile
+	(*GetConfigResponse)(nil),           // 6: collector.v1.GetConfigResponse
+	(*RegisterCollectorRequest)(nil),    // 7: collector.v1.RegisterCollectorRequest
+	(*RegisterCollectorResponse)(nil),   // 8: collector.v1.RegisterCollectorResponse
+	(*UnregisterCollectorRequest)(nil),  // 9: collector.v1.UnregisterCollectorRequest
+	(*UnregisterCollectorResponse)(nil), // 10: collector.v1.UnregisterCollectorResponse
+	nil,                                 // 11: collector.v1.GetConfigRequest.AttributesEntry
+	nil,                                 // 12: collector.v1.GetConfigRequest.LocalAttributesEntry
+	nil,                                 // 13: collector.v1.AgentConfigMap.ConfigMapEntry
+	nil,                                 // 14: collector.v1.RegisterCollectorRequest.AttributesEntry
+	nil,                                 // 15: collector.v1.RegisterCollectorRequest.LocalAttributesEntry
 }
 var file_collector_v1_collector_proto_depIdxs = []int32{
-	8,  // 0: collector.v1.GetConfigRequest.attributes:type_name -> collector.v1.GetConfigRequest.AttributesEntry
-	9,  // 1: collector.v1.GetConfigRequest.local_attributes:type_name -> collector.v1.GetConfigRequest.LocalAttributesEntry
+	11, // 0: collector.v1.GetConfigRequest.attributes:type_name -> collector.v1.GetConfigRequest.AttributesEntry
+	12, // 1: collector.v1.GetConfigRequest.local_attributes:type_name -> collector.v1.GetConfigRequest.LocalAttributesEntry
 	2,  // 2: collector.v1.GetConfigRequest.remote_config_status:type_name -> collector.v1.RemoteConfigStatus
-	0,  // 3: collector.v1.RemoteConfigStatus.status:type_name -> collector.v1.RemoteConfigStatuses
-	10, // 4: collector.v1.RegisterCollectorRequest.attributes:type_name -> collector.v1.RegisterCollectorRequest.AttributesEntry
-	11, // 5: collector.v1.RegisterCollectorRequest.local_attributes:type_name -> collector.v1.RegisterCollectorRequest.LocalAttributesEntry
-	1,  // 6: collector.v1.CollectorService.GetConfig:input_type -> collector.v1.GetConfigRequest
-	4,  // 7: collector.v1.CollectorService.RegisterCollector:input_type -> collector.v1.RegisterCollectorRequest
-	6,  // 8: collector.v1.CollectorService.UnregisterCollector:input_type -> collector.v1.UnregisterCollectorRequest
-	3,  // 9: collector.v1.CollectorService.GetConfig:output_type -> collector.v1.GetConfigResponse
-	5,  // 10: collector.v1.CollectorService.RegisterCollector:output_type -> collector.v1.RegisterCollectorResponse
-	7,  // 11: collector.v1.CollectorService.UnregisterCollector:output_type -> collector.v1.UnregisterCollectorResponse
-	9,  // [9:12] is the sub-list for method output_type
-	6,  // [6:9] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	3,  // 3: collector.v1.GetConfigRequest.effective_config:type_name -> collector.v1.EffectiveConfig
+	0,  // 4: collector.v1.RemoteConfigStatus.status:type_name -> collector.v1.RemoteConfigStatuses
+	4,  // 5: collector.v1.EffectiveConfig.config_map:type_name -> collector.v1.AgentConfigMap
+	13, // 6: collector.v1.AgentConfigMap.config_map:type_name -> collector.v1.AgentConfigMap.ConfigMapEntry
+	14, // 7: collector.v1.RegisterCollectorRequest.attributes:type_name -> collector.v1.RegisterCollectorRequest.AttributesEntry
+	15, // 8: collector.v1.RegisterCollectorRequest.local_attributes:type_name -> collector.v1.RegisterCollectorRequest.LocalAttributesEntry
+	5,  // 9: collector.v1.AgentConfigMap.ConfigMapEntry.value:type_name -> collector.v1.AgentConfigFile
+	1,  // 10: collector.v1.CollectorService.GetConfig:input_type -> collector.v1.GetConfigRequest
+	7,  // 11: collector.v1.CollectorService.RegisterCollector:input_type -> collector.v1.RegisterCollectorRequest
+	9,  // 12: collector.v1.CollectorService.UnregisterCollector:input_type -> collector.v1.UnregisterCollectorRequest
+	6,  // 13: collector.v1.CollectorService.GetConfig:output_type -> collector.v1.GetConfigResponse
+	8,  // 14: collector.v1.CollectorService.RegisterCollector:output_type -> collector.v1.RegisterCollectorResponse
+	10, // 15: collector.v1.CollectorService.UnregisterCollector:output_type -> collector.v1.UnregisterCollectorResponse
+	13, // [13:16] is the sub-list for method output_type
+	10, // [10:13] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_collector_v1_collector_proto_init() }
@@ -690,7 +898,7 @@ func file_collector_v1_collector_proto_init() {
 			}
 		}
 		file_collector_v1_collector_proto_msgTypes[2].Exporter = func(v any, i int) any {
-			switch v := v.(*GetConfigResponse); i {
+			switch v := v.(*EffectiveConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -702,7 +910,7 @@ func file_collector_v1_collector_proto_init() {
 			}
 		}
 		file_collector_v1_collector_proto_msgTypes[3].Exporter = func(v any, i int) any {
-			switch v := v.(*RegisterCollectorRequest); i {
+			switch v := v.(*AgentConfigMap); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -714,7 +922,7 @@ func file_collector_v1_collector_proto_init() {
 			}
 		}
 		file_collector_v1_collector_proto_msgTypes[4].Exporter = func(v any, i int) any {
-			switch v := v.(*RegisterCollectorResponse); i {
+			switch v := v.(*AgentConfigFile); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -726,7 +934,7 @@ func file_collector_v1_collector_proto_init() {
 			}
 		}
 		file_collector_v1_collector_proto_msgTypes[5].Exporter = func(v any, i int) any {
-			switch v := v.(*UnregisterCollectorRequest); i {
+			switch v := v.(*GetConfigResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -738,6 +946,42 @@ func file_collector_v1_collector_proto_init() {
 			}
 		}
 		file_collector_v1_collector_proto_msgTypes[6].Exporter = func(v any, i int) any {
+			switch v := v.(*RegisterCollectorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_collector_v1_collector_proto_msgTypes[7].Exporter = func(v any, i int) any {
+			switch v := v.(*RegisterCollectorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_collector_v1_collector_proto_msgTypes[8].Exporter = func(v any, i int) any {
+			switch v := v.(*UnregisterCollectorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_collector_v1_collector_proto_msgTypes[9].Exporter = func(v any, i int) any {
 			switch v := v.(*UnregisterCollectorResponse); i {
 			case 0:
 				return &v.state
@@ -756,7 +1000,7 @@ func file_collector_v1_collector_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_collector_v1_collector_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   11,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
