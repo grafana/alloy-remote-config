@@ -5,7 +5,7 @@
 package collectorv1connect
 
 import (
-	connect "connectrpc.com/connect"
+	connect "connectrpc.com/connect/v2"
 	context "context"
 	errors "errors"
 	v1 "github.com/grafana/alloy-remote-config/api/gen/proto/go/collector/v1"
